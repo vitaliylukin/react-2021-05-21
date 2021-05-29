@@ -1,13 +1,12 @@
-import Rate from './rate';
+import Review from './review';
 
 export default function Reviews(props) {
-
   return (
     <div>
-      {props.reviews.map((rate) => (
-        <Rate key={rate.id} rate={rate} />
+      <h3>Reviews</h3>
+      {props.reviews.map((review) => (
+        <Review key={review.id} review={review} />
       ))}
     </div>
   );
 }
-
