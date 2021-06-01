@@ -60,18 +60,18 @@ Product.propTypes = {
   decrement: PropTypes.func,
 };
 
-const mapStateToProps = (state) => ({
-  amount: state.order,
+const mapStateToProps = (state, props) => ({
+  amount: state.order[props.product.id] || 0,
 });
 
-const mapDispatchToProps = {
-  increment,
-  decrement,
-};
+// const mapDispatchToProps = {
+//   increment,
+//   decrement,
+// };
 
-// const mapDispatchToProps = (dispatch) => ({
-//   increment: () => dispatch(increment()),
-//   decrement: (a, b, c) => dispatch(decrement(a, b, c)),
-// });
+const mapDispatchToProps = (dispatch, props) => ({
+  increment: () => dispatch(increment(props.product.id)),
+  decrement: () => dispatch(decrement(props.product.id)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product);
