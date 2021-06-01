@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './product.module.css';
 import { ReactComponent as Minus } from '../../icons/minus.svg';
 import { ReactComponent as Plus } from '../../icons/plus.svg';
-
-import counter from '../../hocs/counter';
+import { decrement, increment } from '../../redux/actions';
 
 const Product = ({ product, amount, increment, decrement, fetchData }) => {
   useEffect(() => {
@@ -54,10 +54,24 @@ Product.propTypes = {
     ingredients: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   }).isRequired,
   fetchData: PropTypes.func,
-  // from HOC counter
+  // from connect
   amount: PropTypes.number,
   increment: PropTypes.func,
   decrement: PropTypes.func,
 };
 
-export default counter(Product);
+const mapStateToProps = (state) => ({
+  amount: state.order,
+});
+
+const mapDispatchToProps = {
+  increment,
+  decrement,
+};
+
+// const mapDispatchToProps = (dispatch) => ({
+//   increment: () => dispatch(increment()),
+//   decrement: (a, b, c) => dispatch(decrement(a, b, c)),
+// });
+
+export default connect(mapStateToProps, mapDispatchToProps)(Product);
