@@ -54,4 +54,19 @@ Product.propTypes = {
   decrement: PropTypes.func,
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export default counter(Product);
