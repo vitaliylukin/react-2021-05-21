@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Restaurant from '../restaurant';
-import Navigation from '../navigation';
+import Tabs from '../tabs';
 
 const Restaurants = ({ restaurants }) => {
   const [activeId, setActiveId] = useState(restaurants[0].id);
@@ -11,9 +11,11 @@ const Restaurants = ({ restaurants }) => {
     [activeId, restaurants]
   );
 
+  const tabs = restaurants.map(({ id, name }) => ({ id, title: name }));
+
   return (
     <div>
-      <Navigation restaurants={restaurants} onRestaurantClick={setActiveId} />
+      <Tabs tabs={tabs} activeId={activeId} onChange={setActiveId} />
       <Restaurant restaurant={activeRestaurant} />
     </div>
   );
