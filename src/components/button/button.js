@@ -1,4 +1,5 @@
 import React from 'react';
+import cn from 'classnames';
 import styles from './button.module.css';
 
 import { ReactComponent as PlusIcon } from '../../icons/plus.svg';
@@ -11,11 +12,28 @@ const icons = {
   delete: DeleteIcon,
 };
 
-const Button = ({ icon, onClick }) => {
+const Button = ({
+  icon,
+  onClick,
+  primary = false,
+  secondary = false,
+  small = false,
+  block = false,
+  children,
+}) => {
   const Icon = icons[icon];
   return (
-    <button className={styles.button} onClick={onClick}>
+    <button
+      className={cn(styles.button, {
+        [styles.primary]: primary,
+        [styles.secondary]: secondary,
+        [styles.small]: small,
+        [styles.block]: block,
+      })}
+      onClick={onClick}
+    >
       {Icon && <Icon />}
+      {children}
     </button>
   );
 };
