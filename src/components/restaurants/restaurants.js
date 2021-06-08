@@ -4,19 +4,23 @@ import PropTypes from 'prop-types';
 import Restaurant from '../restaurant';
 import Tabs from '../tabs';
 import Loader from '../loader';
-import { restaurantsListSelector } from '../../redux/selectors';
+import {
+  restaurantsListSelector,
+  restaurantsLoadingSelector,
+  restaurantsLoadedSelector,
+} from '../../redux/selectors';
 import { loadRestaurants } from '../../redux/actions';
 
-const Restaurants = ({ restaurants, loadRestaurants }) => {
+const Restaurants = ({ restaurants, loading, loaded, loadRestaurants }) => {
   const [activeId, setActiveId] = useState(restaurants[0]?.id);
 
   useEffect(() => {
-    loadRestaurants();
-  }, []); // eslint-disable-line
+    if (!loading && !loaded) loadRestaurants();
+  }, [loading, loaded]); // eslint-disable-line
 
   const restaurantId = activeId || restaurants[0]?.id;
 
-  if (restaurants.length === 0) return <Loader />;
+  if (loading || !loaded) return <Loader />;
 
   const tabs = restaurants.map(({ id, name }) => ({ id, title: name }));
 
@@ -38,6 +42,8 @@ Restaurants.propTypes = {
 
 const mapStateToProps = (state) => ({
   restaurants: restaurantsListSelector(state),
+  loading: restaurantsLoadingSelector(state),
+  loaded: restaurantsLoadedSelector(state),
 });
 
 export default connect(mapStateToProps, { loadRestaurants })(Restaurants);
