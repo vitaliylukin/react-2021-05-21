@@ -1,3 +1,4 @@
+import api from '../api';
 import {
   DECREMENT,
   INCREMENT,
@@ -23,16 +24,14 @@ export const addReview = (review, restaurantId) => ({
 
 export const loadRestaurants = () => ({
   type: LOAD_RESTAURANTS,
-  CallAPI: '/api/restaurants',
+  apiCall: () => api.loadRestaurants(),
 });
 
 export const loadReviews = (restaurantId) => async (dispatch) => {
   dispatch({ type: LOAD_REVIEWS + REQUEST, restaurantId });
 
   try {
-    const data = await fetch(`/api/reviews?id=${restaurantId}`).then((res) =>
-      res.json()
-    );
+    const data = await api.loadReviews(restaurantId);
     dispatch({ type: LOAD_REVIEWS + SUCCESS, data, restaurantId });
   } catch (error) {
     dispatch({ type: LOAD_REVIEWS + FAILURE, error, restaurantId });
