@@ -1,10 +1,10 @@
+import React from 'react';
 import { connect } from 'react-redux';
 
 import styles from './basket.module.css';
 import itemStyles from './basket-item/basket-item.module.css';
 import BasketItem from './basket-item';
 import Button from '../button';
-import { orderProductsSelector, totalSelector } from '../../redux/selectors';
 
 function Basket({ title = 'Basket', total, orderProducts }) {
   if (!total) {
@@ -42,11 +42,22 @@ function Basket({ title = 'Basket', total, orderProducts }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    total: totalSelector(state),
-    orderProducts: orderProductsSelector(state),
-  };
-};
+export default connect((state) => {
+  const products = state.restaurants.flatMap((restaurant) => restaurant.menu);
 
-export default connect(mapStateToProps)(Basket);
+  const orderProducts = Object.keys(state.order)
+    .filter((productId) => state.order[productId] > 0)
+    .map((productId) => products.find((product) => product.id === productId))
+    .map((product) => ({
+      product,
+      amount: state.order[product.id],
+      subtotal: state.order[product.id] * product.price,
+    }));
+
+  const total = orderProducts.reduce((acc, { subtotal }) => acc + subtotal, 0);
+
+  return {
+    total,
+    orderProducts,
+  };
+})(Basket);

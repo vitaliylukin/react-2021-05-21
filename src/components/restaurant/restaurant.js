@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import { connect } from 'react-redux';
+import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Menu from '../menu';
 import Reviews from '../reviews';
 import Banner from '../banner';
 import Rate from '../rate';
 import Tabs from '../tabs';
-import {
-  averageRatingSelector,
-  restaurantSelector,
-} from '../../redux/selectors';
 
-const Restaurant = ({ restaurant, averageRating }) => {
-  const { id, name, menu, reviews } = restaurant;
+const Restaurant = ({ restaurant }) => {
+  const { name, menu, reviews } = restaurant;
   const [activeTab, setActiveTab] = useState('menu');
+
+  const averageRating = useMemo(() => {
+    const total = reviews.reduce((acc, { rating }) => acc + rating, 0);
+    return Math.round(total / reviews.length);
+  }, [reviews]);
 
   const tabs = [
     { id: 'menu', title: 'Menu' },
@@ -26,10 +26,8 @@ const Restaurant = ({ restaurant, averageRating }) => {
         <Rate value={averageRating} />
       </Banner>
       <Tabs tabs={tabs} activeId={activeTab} onChange={setActiveTab} />
-      {activeTab === 'menu' && <Menu menu={menu} key={id} />}
-      {activeTab === 'reviews' && (
-        <Reviews reviews={reviews} restaurantId={id} />
-      )}
+      {activeTab === 'menu' && <Menu menu={menu} key={restaurant.id} />}
+      {activeTab === 'reviews' && <Reviews reviews={reviews} />}
     </div>
   );
 };
@@ -39,14 +37,12 @@ Restaurant.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string,
     menu: PropTypes.array,
-    reviews: PropTypes.array,
+    reviews: PropTypes.arrayOf(
+      PropTypes.shape({
+        rating: PropTypes.number.isRequired,
+      }).isRequired
+    ).isRequired,
   }).isRequired,
-  averageRating: PropTypes.number,
 };
 
-const mapStateToProps = (state, props) => ({
-  restaurant: restaurantSelector(state, props),
-  averageRating: averageRatingSelector(state, props),
-});
-
-export default connect(mapStateToProps)(Restaurant);
+export default Restaurant;
