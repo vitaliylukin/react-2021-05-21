@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './product.module.css';
 
 import Button from '../button';
+import { amountSelector, productSelector } from '../../redux/selectors';
 
 import { decrement, increment } from '../../redux/actions';
 
@@ -50,17 +51,13 @@ Product.propTypes = {
 };
 
 const mapStateToProps = (state, props) => ({
-  amount: state.order[props.product.id] || 0,
+  amount: amountSelector(state, props),
+  product: productSelector(state, props),
 });
 
-// const mapDispatchToProps = {
-//   increment,
-//   decrement,
-// };
-
 const mapDispatchToProps = (dispatch, props) => ({
-  increment: () => dispatch(increment(props.product.id)),
-  decrement: () => dispatch(decrement(props.product.id)),
+  increment: () => dispatch(increment(props.id)),
+  decrement: () => dispatch(decrement(props.id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product);
